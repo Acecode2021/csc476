@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Field Reports — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Field Reports</h1>
+  {% if current_user.role in ['Technician', 'Supervisor', 'Administrator'] %}
+  <a class="btn" href="{{ url_for('reports.new_report') }}">New Report</a>
+  {% endif %}
+</div>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Location</th><th>Equipment</th><th>Technician</th><th>Ticket</th><th>Date</th><th>Status</th></tr>
+    {% for r in reports %}
+    <tr>
+      <td>#{{ r.report_id }}</td>
+      <td>{{ r.location }}</td>
+      <td>{{ r.equipment }}</td>
+      <td>{{ r.technician.name }}</td>
+      <td>{% if r.ticket %}<a href="{{ url_for('helpdesk.ticket_detail', ticket_id=r.ticket_id) }}">#{{ r.ticket_id }}</a>{% else %}—{% endif %}</td>
+      <td>{{ r.report_date }}</td>
+      <td><span class="badge badge-Resolved">{{ r.status }}</span></td>
+    </tr>
+    <tr class="detail-row"><td colspan="7">
+      <strong>Findings:</strong> {{ r.findings }}<br>
+      <strong>Action taken:</strong> {{ r.action_taken }}
+    </td></tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">No field reports found.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Reports — Maintenance Department Portal{% endblock %}
+{% block content %}
+<h1>Reports</h1>
+<div class="card">
+  <h2>Filter tickets</h2>
+  <form method="get" action="{{ url_for('dashboard.summary') }}" class="filters">
+    <div>
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        <option value="">All</option>
+        {% for s in statuses %}
+        <option value="{{ s }}" {{ 'selected' if status == s }}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="priority">Priority</label>
+      <select id="priority" name="priority">
+        <option value="">All</option>
+        {% for p in priorities %}
+        <option value="{{ p }}" {{ 'selected' if priority == p }}>{{ p }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="date_from">From</label>
+      <input type="date" id="date_from" name="date_from" value="{{ date_from }}">
+    </div>
+    <div>
+      <label for="date_to">To</label>
+      <input type="date" id="date_to" name="date_to" value="{{ date_to }}">
+    </div>
+    <div><button type="submit" class="btn">Apply</button></div>
+  </form>
+  <table>
+    <tr><th>ID</th><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Technician</th><th>Reported</th></tr>
+    {% for t in tickets %}
+    <tr>
+      <td>#{{ t.ticket_id }}</td>
+      <td><a href="{{ url_for('helpdesk.ticket_detail', ticket_id=t.ticket_id) }}">{{ t.title }}</a></td>
+      <td>{{ t.category }}</td>
+      <td><span class="badge badge-{{ t.priority }}">{{ t.priority }}</span></td>
+      <td><span class="badge badge-{{ t.status.replace(' ', '-') }}">{{ t.status }}</span></td>
+      <td>{{ t.technician.name if t.technician else '—' }}</td>
+      <td>{{ t.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">No tickets match the selected filters.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2>Projects summary ({{ projects|length }})</h2>
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Status</th><th>Progress</th><th>Tasks</th></tr>
+    {% for p in projects %}
+    <tr>
+      <td>#{{ p.project_id }}</td>
+      <td><a href="{{ url_for('projects.project_detail', project_id=p.project_id) }}">{{ p.name }}</a></td>
+      <td><span class="badge badge-{{ p.status }}">{{ p.status }}</span></td>
+      <td>{{ p.progress() }}%</td>
+      <td>{{ p.tasks|length }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2>Field reports summary ({{ reports|length }})</h2>
+  <table>
+    <tr><th>ID</th><th>Location</th><th>Technician</th><th>Date</th></tr>
+    {% for r in reports %}
+    <tr>
+      <td>#{{ r.report_id }}</td>
+      <td>{{ r.location }}</td>
+      <td>{{ r.technician.name }}</td>
+      <td>{{ r.report_date }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

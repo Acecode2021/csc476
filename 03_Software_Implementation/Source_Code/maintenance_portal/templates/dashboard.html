@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Maintenance Department Portal{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="stats">
+  <div class="stat"><div class="value">{{ stats.open_tickets }}</div><div class="label">Open tickets</div></div>
+  <div class="stat"><div class="value">{{ stats.in_progress }}</div><div class="label">In progress</div></div>
+  <div class="stat"><div class="value">{{ stats.resolved }}</div><div class="label">Resolved</div></div>
+  <div class="stat"><div class="value">{{ stats.closed }}</div><div class="label">Closed</div></div>
+  <div class="stat"><div class="value">{{ stats.active_projects }}</div><div class="label">Active projects</div></div>
+  <div class="stat"><div class="value">{{ stats.tasks_pending }}</div><div class="label">Tasks pending</div></div>
+  <div class="stat"><div class="value">{{ stats.tasks_in_progress }}</div><div class="label">Tasks in progress</div></div>
+  <div class="stat"><div class="value">{{ stats.tasks_completed }}</div><div class="label">Tasks completed</div></div>
+  <div class="stat"><div class="value">{{ stats.field_reports }}</div><div class="label">Field reports</div></div>
+</div>
+<div class="card">
+  <h2>Tickets by status</h2>
+  <div class="chart-wrap">
+    <div class="chart">
+      {% for status, count, pct in bars %}
+      <div class="bar" style="height: {{ pct }}%"><span>{{ status }} ({{ count }})</span></div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<div class="card">
+  <h2>Recent tickets</h2>
+  <table>
+    <tr><th>ID</th><th>Title</th><th>Priority</th><th>Status</th><th>Reported</th></tr>
+    {% for t in recent_tickets %}
+    <tr>
+      <td>#{{ t.ticket_id }}</td>
+      <td><a href="{{ url_for('helpdesk.ticket_detail', ticket_id=t.ticket_id) }}">{{ t.title }}</a></td>
+      <td><span class="badge badge-{{ t.priority }}">{{ t.priority }}</span></td>
+      <td><span class="badge badge-{{ t.status.replace(' ', '-') }}">{{ t.status }}</span></td>
+      <td>{{ t.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2>Recent field reports</h2>
+  <table>
+    <tr><th>ID</th><th>Location</th><th>Equipment</th><th>Technician</th><th>Date</th></tr>
+    {% for r in recent_reports %}
+    <tr>
+      <td>#{{ r.report_id }}</td>
+      <td>{{ r.location }}</td>
+      <td>{{ r.equipment }}</td>
+      <td>{{ r.technician.name }}</td>
+      <td>{{ r.report_date }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

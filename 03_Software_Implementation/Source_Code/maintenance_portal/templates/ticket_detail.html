@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Ticket #{{ ticket.ticket_id }} — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="page-head">
+    <h1>Ticket #{{ ticket.ticket_id }}: {{ ticket.title }}</h1>
+    <span class="badge badge-{{ ticket.status.replace(' ', '-') }}">{{ ticket.status }}</span>
+  </div>
+  <p><strong>Category:</strong> {{ ticket.category }} &nbsp; <strong>Priority:</strong>
+     <span class="badge badge-{{ ticket.priority }}">{{ ticket.priority }}</span></p>
+  <p><strong>Reporter:</strong> {{ ticket.reporter.name }} &nbsp;
+     <strong>Technician:</strong> {{ ticket.technician.name if ticket.technician else 'Unassigned' }}</p>
+  <p><strong>Description:</strong></p>
+  <p>{{ ticket.description }}</p>
+  <p class="muted small">Opened {{ ticket.created_at.strftime('%Y-%m-%d %H:%M') }}
+     {% if ticket.resolved_at %} &nbsp;•&nbsp; Resolved {{ ticket.resolved_at.strftime('%Y-%m-%d %H:%M') }}{% endif %}</p>
+</div>
+
+{% if current_user.role in ['Supervisor', 'Administrator'] %}
+<div class="card">
+  <h2>Assign ticket</h2>
+  <form method="post" action="{{ url_for('helpdesk.ticket_detail', ticket_id=ticket.ticket_id) }}" class="inline-form">
+    <input type="hidden" name="action" value="assign">
+    <select name="technician_id" required>
+      <option value="">Select technician</option>
+      {% for tech in technicians %}
+      <option value="{{ tech.user_id }}" {{ 'selected' if ticket.technician_id == tech.user_id }}>{{ tech.name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn">Assign</button>
+  </form>
+</div>
+{% endif %}
+
+{% if current_user.role in ['Technician', 'Supervisor', 'Administrator'] %}
+<div class="card">
+  <h2>Update status</h2>
+  <form method="post" action="{{ url_for('helpdesk.ticket_detail', ticket_id=ticket.ticket_id) }}" class="inline-form">
+    <input type="hidden" name="action" value="status">
+    <select name="status">
+      {% for s in statuses %}
+      <option value="{{ s }}" {{ 'selected' if ticket.status == s }}>{{ s }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn">Update</button>
+  </form>
+  <h2>Add a comment</h2>
+  <form method="post" action="{{ url_for('helpdesk.ticket_detail', ticket_id=ticket.ticket_id) }}">
+    <input type="hidden" name="action" value="comment">
+    <label for="note">Comment</label>
+    <textarea id="note" name="note" required></textarea>
+    <button type="submit" class="btn">Add comment</button>
+  </form>
+</div>
+{% endif %}
+
+<div class="card">
+  <h2>History</h2>
+  <table>
+    <tr><th>Date</th><th>Author</th><th>Note</th></tr>
+    {% for u in updates %}
+    <tr>
+      <td>{{ u.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ u.author.name }}</td>
+      <td>{{ u.note }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="muted">No updates yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}New Ticket — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="card form-card">
+  <h1>Submit a new ticket</h1>
+  <form method="post" action="{{ url_for('helpdesk.new_ticket') }}">
+    <label for="title">Title *</label>
+    <input type="text" id="title" name="title" required>
+    <label for="category">Category</label>
+    <select id="category" name="category">
+      {% for c in categories %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+    </select>
+    <label for="priority">Priority</label>
+    <select id="priority" name="priority">
+      {% for p in priorities %}<option value="{{ p }}" {{ 'selected' if p == 'Medium' }}>{{ p }}</option>{% endfor %}
+    </select>
+    <label for="description">Description *</label>
+    <textarea id="description" name="description" required></textarea>
+    <button type="submit" class="btn">Submit ticket</button>
+    <a class="btn btn-secondary" href="{{ url_for('helpdesk.list_tickets') }}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

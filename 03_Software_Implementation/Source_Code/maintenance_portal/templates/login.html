@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Sign in — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="card login-box">
+  <h1>Sign in</h1>
+  <p class="muted">Maintenance Department Portal — Help Desk, Projects and Field Reports</p>
+  <form method="post" action="{{ url_for('auth.login') }}">
+    <label for="email">Email address</label>
+    <input type="email" id="email" name="email" placeholder="you@maintenance.local" required autofocus>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Password" required>
+    <button type="submit" class="btn">Log in</button>
+  </form>
+  <p class="muted small">Roles: Staff, Technician, Supervisor, Administrator</p>
+</div>
+{% endblock %}

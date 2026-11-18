@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Tickets — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Help Desk Tickets</h1>
+  {% if current_user.role in ['Staff', 'Supervisor', 'Administrator'] %}
+  <a class="btn" href="{{ url_for('helpdesk.new_ticket') }}">New Ticket</a>
+  {% endif %}
+</div>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Title</th><th>Category</th><th>Priority</th><th>Status</th><th>Technician</th><th>Reported</th></tr>
+    {% for t in tickets %}
+    <tr>
+      <td>#{{ t.ticket_id }}</td>
+      <td><a href="{{ url_for('helpdesk.ticket_detail', ticket_id=t.ticket_id) }}">{{ t.title }}</a></td>
+      <td>{{ t.category }}</td>
+      <td><span class="badge badge-{{ t.priority }}">{{ t.priority }}</span></td>
+      <td><span class="badge badge-{{ t.status.replace(' ', '-') }}">{{ t.status }}</span></td>
+      <td>{{ t.technician.name if t.technician else '—' }}</td>
+      <td>{{ t.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="muted">No tickets found.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

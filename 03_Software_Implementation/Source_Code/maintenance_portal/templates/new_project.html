@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}New Project — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="card form-card">
+  <h1>Create a new project</h1>
+  <form method="post" action="{{ url_for('projects.new_project') }}">
+    <label for="name">Project name *</label>
+    <input type="text" id="name" name="name" required>
+    <label for="description">Description</label>
+    <textarea id="description" name="description"></textarea>
+    <label for="start_date">Start date</label>
+    <input type="date" id="start_date" name="start_date">
+    <label for="end_date">End date</label>
+    <input type="date" id="end_date" name="end_date">
+    <button type="submit" class="btn">Create project</button>
+    <a class="btn btn-secondary" href="{{ url_for('projects.list_projects') }}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

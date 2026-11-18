@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Users — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>User accounts</h1>
+  <a class="btn" href="{{ url_for('auth.new_user') }}">New User</a>
+</div>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Created</th></tr>
+    {% for u in users %}
+    <tr>
+      <td>#{{ u.user_id }}</td>
+      <td>{{ u.name }}</td>
+      <td>{{ u.email }}</td>
+      <td><span class="badge badge-{{ u.role }}">{{ u.role }}</span></td>
+      <td>{{ u.created_at.strftime('%Y-%m-%d') }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

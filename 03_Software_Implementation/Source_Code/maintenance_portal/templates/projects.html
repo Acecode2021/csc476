@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Projects — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Maintenance Projects</h1>
+  {% if current_user.role in ['Supervisor', 'Administrator'] %}
+  <a class="btn" href="{{ url_for('projects.new_project') }}">New Project</a>
+  {% endif %}
+</div>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Period</th><th>Status</th><th>Progress</th><th>Tasks</th></tr>
+    {% for p in projects %}
+    <tr>
+      <td>#{{ p.project_id }}</td>
+      <td><a href="{{ url_for('projects.project_detail', project_id=p.project_id) }}">{{ p.name }}</a></td>
+      <td>{{ p.start_date or '—' }} to {{ p.end_date or '—' }}</td>
+      <td><span class="badge badge-{{ p.status }}">{{ p.status }}</span></td>
+      <td>
+        <span class="progress-track"><span class="progress-fill" style="width: {{ p.progress() }}%"></span></span>
+        {{ p.progress() }}%
+      </td>
+      <td>{{ p.tasks|length }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="muted">No projects found.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

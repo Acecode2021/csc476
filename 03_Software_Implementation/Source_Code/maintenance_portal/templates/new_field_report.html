@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}New Field Report — Maintenance Department Portal{% endblock %}
+{% block content %}
+<div class="card form-card">
+  <h1>File a field report</h1>
+  <form method="post" action="{{ url_for('reports.new_report') }}">
+    <label for="location">Location *</label>
+    <input type="text" id="location" name="location" required>
+    <label for="equipment">Equipment</label>
+    <input type="text" id="equipment" name="equipment">
+    <label for="ticket_id">Related ticket (optional)</label>
+    <select id="ticket_id" name="ticket_id">
+      <option value="">None</option>
+      {% for t in tickets %}
+      <option value="{{ t.ticket_id }}">#{{ t.ticket_id }} — {{ t.title }}</option>
+      {% endfor %}
+    </select>
+    <label for="findings">Findings *</label>
+    <textarea id="findings" name="findings" required></textarea>
+    <label for="action_taken">Action taken *</label>
+    <textarea id="action_taken" name="action_taken" required></textarea>
+    <label for="report_date">Report date</label>
+    <input type="date" id="report_date" name="report_date">
+    <button type="submit" class="btn">Submit report</button>
+    <a class="btn btn-secondary" href="{{ url_for('reports.list_reports') }}">Cancel</a>
+  </form>
+</div>
+{% endblock %}
